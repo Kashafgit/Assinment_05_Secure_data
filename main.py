@@ -4,12 +4,12 @@ import json
 import os
 from cryptography.fernet import Fernet
 
-# --- Constants ---
+
 KEY_FILE = "secret.key"
 DATA_FILE = "data.json"
 MASTER_PASSWORD = "admin123"
 
-# --- Load or Generate Encryption Key ---
+
 def load_key():
     if not os.path.exists(KEY_FILE):
         key = Fernet.generate_key()
@@ -23,7 +23,7 @@ def load_key():
 KEY = load_key()
 cipher = Fernet(KEY)
 
-# --- Data Handling ---
+
 def load_data():
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "r") as f:
@@ -36,7 +36,7 @@ def save_data(data):
 
 stored_data = load_data()
 
-# --- Session States ---
+
 if "failed_attempts" not in st.session_state:
     st.session_state.failed_attempts = 0
 if "reauthorized" not in st.session_state:
@@ -44,7 +44,7 @@ if "reauthorized" not in st.session_state:
 if "login_required" not in st.session_state:
     st.session_state.login_required = False
 
-# --- Utility Functions ---
+
 def hash_passkey(passkey):
     return hashlib.sha256(passkey.encode()).hexdigest()
 
@@ -60,14 +60,14 @@ def decrypt_data(encrypted_text, passkey):
     st.session_state.failed_attempts += 1
     return None
 
-# --- Sidebar Navigation ---
+
 menu = ["🏠 Home", "🔐 Store Data", "🔍 Retrieve Data"]
 if st.session_state.login_required:
     menu = ["🔐 Login Required"]
 
 choice = st.sidebar.selectbox("📋 Navigation", menu)
 
-# --- Home Page ---
+
 if choice == "🏠 Home":
     st.title("🔐 Secure Data Encryption System")
     st.subheader("🛡️ Your Personal Digital Vault")
@@ -81,7 +81,7 @@ if choice == "🏠 Home":
     """)
    
 
-# --- Store Data ---
+
 elif choice == "🔐 Store Data":
     st.header("📂 Store Your Secure Data")
     username = st.text_input("👤 Username")
@@ -99,7 +99,7 @@ elif choice == "🔐 Store Data":
         else:
             st.warning("⚠️ Please fill all fields before saving.")
 
-# --- Retrieve Data ---
+
 elif choice == "🔍 Retrieve Data":
     if st.session_state.reauthorized:
         st.success("✅ Reauthorized successfully!")
@@ -128,7 +128,7 @@ elif choice == "🔍 Retrieve Data":
         else:
             st.warning("⚠️ Please fill in both fields.")
 
-# --- Login Page ---
+
 elif choice == "🔐 Login Required":
     st.header("🔐 Reauthorization Required")
     login_input = st.text_input("🔑 Enter Master Password", type="password")
